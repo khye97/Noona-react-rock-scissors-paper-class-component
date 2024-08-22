@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 import Box from './component/Box.js'
+import React, { Component } from "react";
 
 
 // 1. 박스 2개 (내부에 타이틀(유저), 사진, 결과)
@@ -26,36 +27,33 @@ const choice = {
   }
 }
 
-
-function App() {
-  const [userSelect, setUserSelect] = useState(null);
-  const [computerSelect, setComputerSelect] = useState(null);
-  const [result, setResult] = useState('');
-
-
-  function play (userChoice){
-    setUserSelect(choice[userChoice]);
-    let computerChoice = randomChoice();
-    setComputerSelect(computerChoice);
-    setResult(judgement(choice[userChoice], computerChoice));
+export default class App extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      userSelect: null,
+      computerSelect: null,
+      result: ""
+    }
   }
 
-  function randomChoice (){
+  play = (userChoice) => {
+    let computerChoice = this.randomChoice();
+    this.setState({
+      userSelect: choice[userChoice],
+      computerSelect: computerChoice,
+      result: this.judgement(choice[userChoice], computerChoice)
+    })
+  }
+
+  randomChoice = () => {
     let itemArray = Object.keys(choice);    
     let randomNum = Math.floor(Math.random() * itemArray.length);
     let final = itemArray[randomNum];
     return choice[final];
   }
 
-  function judgement (user, computer){
-    // user === computer 비김(tie)
-    // user === rock, computer === scissors | user 이김
-    // user === rock, computer === paper | user 짐
-    // suer === scissors, computer === rock | user 짐
-    // user === scissors, computer === paper | user 이김
-    // user === paper, computer === rock | user 이김
-    // user === paper, computer === scissors | user 짐
-    
+  judgement = (user, computer) => {
     if (user.name === computer.name){
       return "Tie";
     } else if (user.name === "Rock"){
@@ -67,26 +65,91 @@ function App() {
     }
   }
 
-  return (
-    <div className='wrap'>
-      <h1 className='title'>Rock Scissors Paper!</h1>
-      <div className='out-box'>
-        <Box player="You" item={userSelect} result={result} />
-        <Box player="Computer" item={computerSelect} result={result} />
+
+  render (){
+    return (
+      <div className='wrap'>
+        <h1 className='title'>Rock Scissors Paper!</h1>
+        <div className='out-box'>
+          <Box player="You" item={this.state.userSelect} result={this.state.result} />
+          <Box player="Computer" item={this.state.computerSelect} result={this.state.result} />
+        </div>
+        <div className='btn-box'>
+          <button className='btn scissors' onClick={() => { this.play("scissors") }}>
+            <img src="image/scissors.png" />
+          </button>
+          <button className='btn rock' onClick={() => { this.play("rock") }}>
+            <img src="image/rock.png" />
+          </button>
+          <button className='btn paper' onClick={() => { this.play("paper") }}>
+            <img src="image/paper.png" />
+          </button>
+        </div>
       </div>
-      <div className='btn-box'>
-        <button className='btn scissors' onClick={() => { play("scissors") }}>
-          <img src="image/scissors.png" />
-        </button>
-        <button className='btn rock' onClick={() => { play("rock") }}>
-          <img src="image/rock.png" />
-        </button>
-        <button className='btn paper' onClick={() => { play("paper") }}>
-          <img src="image/paper.png" />
-        </button>
-      </div>
-    </div>
-  );
+    )
+  }
 }
 
-export default App;
+// function App() {
+  // const [userSelect, setUserSelect] = useState(null);
+  // const [computerSelect, setComputerSelect] = useState(null);
+  // const [result, setResult] = useState('');
+
+
+  // function play (userChoice){
+  //   setUserSelect(choice[userChoice]);
+  //   let computerChoice = randomChoice();
+  //   setComputerSelect(computerChoice);
+  //   setResult(judgement(choice[userChoice], computerChoice));
+  // }
+
+  // function randomChoice (){
+  //   let itemArray = Object.keys(choice);    
+  //   let randomNum = Math.floor(Math.random() * itemArray.length);
+  //   let final = itemArray[randomNum];
+  //   return choice[final];
+  // }
+
+  // function judgement (user, computer){
+  //   // user === computer 비김(tie)
+  //   // user === rock, computer === scissors | user 이김
+  //   // user === rock, computer === paper | user 짐
+  //   // suer === scissors, computer === rock | user 짐
+  //   // user === scissors, computer === paper | user 이김
+  //   // user === paper, computer === rock | user 이김
+  //   // user === paper, computer === scissors | user 짐
+    
+  //   if (user.name === computer.name){
+  //     return "Tie";
+  //   } else if (user.name === "Rock"){
+  //     return computer.name === "Scissors" ? "Win" : "Lose";
+  //   } else if (user.name === "Paper"){
+  //     return computer.name === "Rock" ? "Win" : "Lose";
+  //   } else if (user.name === "Scissors"){
+  //     return computer.name === "Paper" ? "Win" : "Lose"
+  //   }
+  // }
+
+//   return (
+//     <div className='wrap'>
+//       <h1 className='title'>Rock Scissors Paper!</h1>
+//       <div className='out-box'>
+//         <Box player="You" item={userSelect} result={result} />
+//         <Box player="Computer" item={computerSelect} result={result} />
+//       </div>
+//       <div className='btn-box'>
+//         <button className='btn scissors' onClick={() => { play("scissors") }}>
+//           <img src="image/scissors.png" />
+//         </button>
+//         <button className='btn rock' onClick={() => { play("rock") }}>
+//           <img src="image/rock.png" />
+//         </button>
+//         <button className='btn paper' onClick={() => { play("paper") }}>
+//           <img src="image/paper.png" />
+//         </button>
+//       </div>
+//     </div>
+//   );
+// }
+
+//export default App;
